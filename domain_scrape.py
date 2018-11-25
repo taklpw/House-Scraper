@@ -22,7 +22,7 @@ page_num_max = int(soup.find_all('a', attrs={'class': 'paginator__page-button'})
 # Get search results
 listings = soup.find_all('li', attrs={'class': 'search-results__listing'})
 
-listing_dict = {}
+listings_info = []
 while page_num <= page_num_max:
     if page_num > 1:
         url = base_url + page_modifier + str(page_num)
@@ -83,16 +83,20 @@ while page_num <= page_num_max:
         if url:
             url = url[0]['href']
 
-        # Add the listing to the dictionary
-
-        listing_dict[url] = {
+        # Add the listing to list
+        listings_info.append({
+            'url': url,
             'price': price,
             'address': address,
             'bedrooms': bed_num,
             'bathrooms': bath_num,
             'cars': car_num
-        }
+        })
 
     # Get ready for the next page
     page_num += 1
-print(listing_dict)
+
+# Display
+print("{} listings".format(len(listings_info)))
+for listing in listings_info:
+    print(listing)

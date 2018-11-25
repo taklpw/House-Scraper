@@ -5,6 +5,13 @@
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 import re
+import googlemaps
+from datetime import datetime
+
+# Google maps key load
+gmaps_key = open('gmaps_key').read()
+gmaps = googlemaps.Client(key=gmaps_key)
+
 
 # URL stuff
 base_url = "https://www.domain.com.au/rent/?suburb=newtown-nsw-2042,redfern-nsw-2016,enmore-nsw-2042&ptype=apartment-unit-flat&bedrooms=3&ssubs=1&sort=dateupdated-desc&excludedeposittaken=1"
@@ -87,6 +94,25 @@ while page_num <= page_num_max:
         if url:
             url = url[0]['href']
 
+        # Get distance to train station
+        now = datetime.now()
+        stations = ['Redfern',
+                    'Macdonaldtown',
+                    'Erskineville',
+                    'Newtown',
+                    'St Peters',
+                    'Stanmore',
+                    'Petersham']
+        distance_dict = {}
+        for station in stations:
+            directions_result = gmaps.distance_matrix(
+                address,
+                station + ' Station, Sydney, NSW, Australia',
+                mode='walking',
+                departure_time=now
+            )
+            distance_dict[station + '_dist'] = int(directions_result['rows'][0]['elements'][0]['duration']['value'])/60
+
         # Add the listing to list
         listings_info.append({
             'url': url,
@@ -94,7 +120,8 @@ while page_num <= page_num_max:
             'address': address,
             'bedrooms': bed_num,
             'bathrooms': bath_num,
-            'cars': car_num
+            'cars': car_num,
+            'station_distances': distance_dict
         })
 
     # Get ready for the next page

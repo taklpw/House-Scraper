@@ -40,7 +40,7 @@ while page_num <= page_num_max:
             # filter out the garbage around the actual price
             price_text = price_text.replace(',', '').replace('$', '')
             price_possibilities = price_text.split('$')[0].split(' ')
-            for price_possibility in price_possibilities:
+            for i, price_possibility in enumerate(price_possibilities):
                 # 5 digits is too many
                 if len(price_possibility) > 4:
                     price_possibility = price_possibility[0:4]
@@ -53,6 +53,10 @@ while page_num <= page_num_max:
                 # If it's a number it's our number
                 if price_possibility.isdigit():
                     price = price_possibility
+                    break
+
+                price = None
+
         else:
             # If there is no price, don't even bother
             continue

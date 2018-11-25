@@ -1,5 +1,4 @@
 # Domain.com.au result scraper
-# TODO: Google maps API to get nearest train station and walking time to station
 # TODO: nbn API to find when and what nbn
 
 from bs4 import BeautifulSoup
